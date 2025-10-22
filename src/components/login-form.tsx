@@ -1,3 +1,5 @@
+"use client"
+
 import { GalleryVerticalEnd } from "lucide-react"
 import { useState } from "react"
 
@@ -33,27 +35,26 @@ export function LoginForm({
     setUserData(null)
 
     try {
-      const { data, error } = await supabase.auth.signInWithOtp({
-        email: email,
-      })
+      // Insert directly into public.emails (exercise requires storing email + showing UUID/timestamp)
+      const { data: insertData, error: insertError } = await supabase
+        .from('emails')
+        .insert({ email })
+        .select()
+        .single()
 
-      if (error) {
-        setError(error.message)
+      if (insertError) {
+        setError(insertError.message)
         return
       }
 
-      // Get user data after successful registration
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (user) {
-        setUserData({
-          id: user.id,
-          email: user.email || email,
-          created_at: user.created_at
-        })
-      }
+      // Display the stored row
+      setUserData({
+        id: insertData.id,
+        email: insertData.email,
+        created_at: insertData.created_at,
+      })
     } catch (err) {
-      setError("An unexpected error occurred")
+      setError("Error inesperado al conectar con Supabase.")
     } finally {
       setIsLoading(false)
     }

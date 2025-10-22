@@ -14,8 +14,8 @@
 2. Click "New Project"
 3. Import your GitHub repository
 4. Add environment variables:
-   - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anon key
+   - `NEXT_PUBLIC_SUPABASE_URL`: `https://cyzstkgqgvcyfvtihsqu.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5enN0a2dxZ3ZjeWZ2dGloc3F1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NzM1NDUsImV4cCI6MjA3NjU0OTU0NX0.sdNAKB4MC29weaZ7Im3RUNxtYw1NDb6xdj8NL9gRD3g`
 5. Click "Deploy"
 
 ### Step 3: Test the Application
@@ -25,7 +25,36 @@
 4. Verify the UUID, timestamp, and email are displayed correctly
 
 ## Supabase Setup
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to Authentication > Settings
-3. Enable email authentication
-4. Copy your project URL and anon key to Vercel environment variables
+1. In your project, enable Email auth in Authentication > Providers
+2. Create table `emails` and policies (SQL below) in SQL editor
+
+### SQL to create table and RLS policies
+```sql
+-- 1) Table
+create table if not exists public.emails (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  created_at timestamptz not null default now()
+);
+
+-- 2) Enable RLS
+alter table public.emails enable row level security;
+
+-- 3) Policies (Postgres doesn't support IF NOT EXISTS for policies)
+do $$
+begin
+  begin
+    create policy "Allow anon insert" on public.emails
+      for insert to anon
+      with check (true);
+  exception when duplicate_object then null;
+  end;
+
+  begin
+    create policy "Allow anon select" on public.emails
+      for select to anon
+      using (true);
+  exception when duplicate_object then null;
+  end;
+end $$;
+```

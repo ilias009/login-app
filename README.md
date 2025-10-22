@@ -12,8 +12,8 @@ This is a Next.js application with a login form that registers emails in Supabas
 4. Create a `.env.local` file in the root directory with:
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+NEXT_PUBLIC_SUPABASE_URL=https://cyzstkgqgvcyfvtihsqu.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5enN0a2dxZ3ZjeWZ2dGloc3F1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NzM1NDUsImV4cCI6MjA3NjU0OTU0NX0.sdNAKB4MC29weaZ7Im3RUNxtYw1NDb6xdj8NL9gRD3g
 ```
 
 ### 2. Database Setup
